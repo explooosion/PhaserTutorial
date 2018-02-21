@@ -14,10 +14,9 @@ export default class extends Phaser.State {
 
   create() {
 
-    this.map = this.game.add.tilemap('mymap')
-    this.map.addTilesetImage('DD', 'tiles')
-    this.layer = this.map.createLayer('Tile');
-
+    this.map = this.game.add.tilemap('map')
+    this.map.addTilesetImage('tile', 'tiles')
+    this.layer = this.map.createLayer('Layer');
 
     this.layer.resizeWorld()
     // this.layer.wrap = true // repeat
