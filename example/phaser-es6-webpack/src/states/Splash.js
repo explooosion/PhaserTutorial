@@ -15,10 +15,13 @@ export default class extends Phaser.State {
     //
     // load your assets
     //
+    this.load.tilemap('desert', 'assets/map/desert.json', null, Phaser.Tilemap.TILED_JSON)
     this.load.image('sky', 'assets/images/sky.png')
     this.load.image('ground', 'assets/images/platform.png')
     this.load.image('star', 'assets/images/star.png')
+    this.load.image('tiles', 'assets/map/tmw_desert_spacing.png')
     this.load.spritesheet('dude', 'assets/images/dude.png', 32, 48)
+
   }
 
   create() {

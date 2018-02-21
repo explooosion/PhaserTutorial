@@ -14,9 +14,14 @@ export default class extends Phaser.State {
 
     this.game.physics.startSystem(Phaser.Physics.ARCADE)
 
+    // let map = this.game.add.tilemap('desert')
+    // map.addTilesetImage('tiles', 'tiles')
+    // let layer = map.createLayer('Ground')
+    // layer.resizeWorld();
+
     // Add Sky
     this.sky = new Sky({ game: this.game, x: 0, y: 0, asset: 'sky' })
-    this.game.add.existing(this.sky)
+    // this.game.add.existing(this.sky)
 
     // Add Platforms
     this.ground = new Ground({ game: this.game, x: 0, y: this.world.height - 64, asset: 'ground' })
