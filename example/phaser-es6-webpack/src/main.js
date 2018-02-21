@@ -17,7 +17,7 @@ class Game extends Phaser.Game {
     const width = 800
     const height = 600
 
-    super(width, height, Phaser.CANVAS, '', null)
+    super(width, height, Phaser.AUTO, '', null)
 
     this.state.add('Boot', BootState, false)
     this.state.add('Splash', SplashState, false)
