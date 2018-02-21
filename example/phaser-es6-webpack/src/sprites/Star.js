@@ -9,9 +9,10 @@ export default class extends Phaser.Sprite {
     }) {
         super(game, x, y, asset)
 
-        // // 固定物體 (避免受重力影響)
         this.game.physics.arcade.enable(this)
-        this.body.immovable = true
+        this.body.gravity.y = 300;
+        this.body.bounce.y = 0.7 + Math.random() * 0.2;
+        this.body.collideWorldBounds = true
     }
 
     update() { }
