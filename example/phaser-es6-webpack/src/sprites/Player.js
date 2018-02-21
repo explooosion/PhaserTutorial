@@ -10,8 +10,8 @@ export default class extends Phaser.Sprite {
         super(game, x, y, asset)
 
         this.game.physics.arcade.enable(this)
-        this.body.bounce.y = 0.2
-        this.body.gravity.y = 300
+        this.body.bounce.y = 0.1
+        this.body.gravity.y = 400
         this.body.collideWorldBounds = true
         this.animations.add('left', [0, 1, 2, 3], 10, true)
         this.animations.add('right', [5, 6, 7, 8], 10, true)
@@ -24,10 +24,10 @@ export default class extends Phaser.Sprite {
         this.body.velocity.x = 0;
 
         if (this.cursors.left.isDown) {
-            this.body.velocity.x = -150;
+            this.body.velocity.x = -200;
             this.animations.play('left');
         } else if (this.cursors.right.isDown) {
-            this.body.velocity.x = 150;
+            this.body.velocity.x = 200;
             this.animations.play('right');
         } else {
             this.animations.stop();
