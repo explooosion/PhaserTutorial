@@ -4,6 +4,7 @@ import Sky from '../sprites/Sky'
 import Ground from '../sprites/Ground'
 import Player from '../sprites/Player'
 import Star from '../sprites/Star'
+import Wall from '../sprites/Wall'
 import Score from '../texts/Score'
 
 // import Tiled from 'phaser-tiled';
@@ -91,28 +92,19 @@ export default class extends Phaser.State {
       }
     })
     this.game.add.existing(this.scoreText)
+
     this.createItems()
 
-    this.cursors = this.game.input.keyboard.createCursorKeys();
+    this.cursors = this.game.input.keyboard.createCursorKeys()
+    this.game.camera.follow(this.player);
   }
 
   update() {
-    this.game.physics.arcade.collide(this.player, this.layer);
+    this.game.physics.arcade.collide(this.player, this.items)
+
     this.game.physics.arcade.collide(this.player, this.platforms)
     this.game.physics.arcade.collide(this.stars, this.platforms)
     this.game.physics.arcade.overlap(this.player, this.stars, this.collectStar, null, this);
-
-    if (this.cursors.left.isDown) {
-      this.game.camera.x -= 8;
-    } else if (this.cursors.right.isDown) {
-      this.game.camera.x += 8;
-    }
-
-    if (this.cursors.up.isDown) {
-      this.game.camera.y -= 8;
-    } else if (this.cursors.down.isDown) {
-      this.game.camera.y += 8;
-    }
   }
 
   render() {
@@ -135,20 +127,47 @@ export default class extends Phaser.State {
   createItems() {
     this.items = this.game.add.group();
     this.items.enableBody = true;
-    var item;
-    const result = this.findObjectsByType('item', this.map, 'objectsLayer');
 
+    this.result = this.findLayersByName('board', this.map, 0);
+    this.result.forEach(element => {
+      this.createFromTiledObject(element, this.items);
+    })
   }
-  findObjectsByType(type, map, layer) {
-    var result = [];
-    // map.objects[layer].forEach(function (element) {
-    //   if (element.properties.type === type) {
-    //     element.y -= map.tileHeight;
-    //     result.push(element);
-    //   }
-    // });
-    console.log(map)
+  findLayersByName(name, map, index) {
+
+    let result = [];
+
+    for (let i = 0; i < 80; i++) {
+      for (let j = 0; j < 20; j++) {
+        // If name is wall then collide
+        let obj = this.map.layers[index].data[i][j]
+        if (obj.properties.Name === name) {
+
+          // resize item
+          obj.y *= map.tileHeight;
+          obj.x *= map.tileWidth;
+          result.push(obj);
+        }
+
+      }
+    }
     return result;
   }
 
+  createFromTiledObject(element, group) {
+
+    var wall = new Wall({
+      game: this.game,
+      x: element.x,
+      y: element.y,
+      asset: 'obj'
+    })
+
+    wall.frame = 45;
+    Object.keys(element.properties).forEach(function (key) {
+      wall[key] = element.properties[key];
+    });
+
+    group.add(wall)
+  }
 }
