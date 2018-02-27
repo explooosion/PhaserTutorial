@@ -11,7 +11,9 @@ export default class extends Phaser.Sprite {
         super(game, x, y, asset)
 
         this.clientid = clientid
-        
+
+        console.log(this.game, this.x, this.y, this.asset, this.clientid)
+
         this.isMoving = false
 
         this.game.physics.arcade.enable(this)
