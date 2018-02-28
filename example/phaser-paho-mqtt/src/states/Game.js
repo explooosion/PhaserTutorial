@@ -1,4 +1,3 @@
-/* globals __DEV__ */
 import Phaser from 'phaser'
 
 import Client from '../paho/Client'
@@ -22,11 +21,18 @@ export default class extends Phaser.State {
     console.log('ini')
   }
   preload() {
+    this.music = this.game.add.audio('warcraft-Human')
+    /** 0-1 */
+    this.music.volume = 0.5
+    this.music.play()
+    /** 靜音 */
+    // this.music.mute = true
     console.log('preload')
   }
 
   create() {
 
+    /** Connection */
     const ROOM = window.location.hash === '' ? 'abcdef' : window.location.hash.trim().replace('#', '')
     this.client = new Client(ROOM)
     this.client.onConnect()
@@ -45,16 +51,36 @@ export default class extends Phaser.State {
     this.enemies = []
 
     this.cursors = this.game.input.keyboard.createCursorKeys()
+
+    /** Keyboard */
+
+    const exitKey = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC)
+    exitKey.onDown.add(() => {
+      console.log('press exit')
+      this.client.client.disconnect()
+      this.stage.restart()
+      // this.state.start('Menu', true, false);
+    }, this)
+
   }
 
+  shutdown() {
+    console.log('shutdown')
+  }
   render() {
-    if (__DEV__) {}
+    if (__DEV__) {
+      this.game.debug.inputInfo(32, 32)
+      if (this.line !== undefined) {
+        this.game.debug.geom(this.line);
+        this.game.debug.lineInfo(this.line, 32, 150);
+      }
+    }
   }
 
   setTopicHandler(receive) {
     this.client.receive = bulidMessageObjects(receive)
     /** Server */
-    this.client.on('room', this.onEventRoom.bind(this.client))
+    // this.client.on('room', this.onEventRoom.bind(this.client))
     /** Client */
     this.client.on(`join/${this.client.master}`, this.onJoinRoom.bind(this.client))
     this.client.on(`game/${this.client.master}/${this.client.player}`, this.onNewStatus.bind(this))
@@ -85,8 +111,8 @@ export default class extends Phaser.State {
         this.client.unsubscribe(`join/${this.master}`)
         this.client.subscribe(`game/${this.master}/${this.player}`)
         /** Server */
-        this.client.subscribe(`game/${this.master}`)
-        this.onBroadcastPlayer(this.master, this.player)
+        // this.client.subscribe(`game/${this.master}`)
+        // this.onBroadcastPlayer(this.master, this.player)
         break
       case 'fail':
         console.log('client: join fail')
@@ -158,6 +184,15 @@ export default class extends Phaser.State {
 
   update() {
 
+    if (this.player !== undefined && this.marker !== undefined) {
+      if (this.line === undefined && this.marker.visible === true) {
+        this.line = new Phaser.Line(this.player.x, this.player.y, this.marker.x, this.marker.y)
+        this.line.fromSprite(this.player, this.marker, false)
+      } else {
+        this.line = undefined
+      }
+    }
+
     if (this.player !== undefined) {
 
       for (var i = 0; i < this.enemies.length; i++) {
@@ -198,7 +233,7 @@ export default class extends Phaser.State {
           })
 
           /** Move By Mouse */
-          this.game.physics.arcade.moveToXY(this.player, point.x, point.y, 300);
+          // this.game.physics.arcade.moveToXY(this.player, point.x, point.y, 300);
 
           if (this.marker !== undefined) {
             this.marker.kill()

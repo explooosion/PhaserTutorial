@@ -48,8 +48,8 @@ export default class Clients {
         // this.client.send(Message.RemoveRoom(this.master))
 
         /** Server */
-        this.client.subscribe(`room`)
-        this.client.subscribe(`newplayer/${this.master}`)
+        // this.client.subscribe(`room`)
+        // this.client.subscribe(`newplayer/${this.master}`)
 
         /** Client */
         this.client.subscribe(`join/${this.master}`)
