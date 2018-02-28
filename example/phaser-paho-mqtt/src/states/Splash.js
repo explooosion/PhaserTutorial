@@ -12,19 +12,19 @@ export default class extends Phaser.State {
 
   loadScripts() {}
   loadBgm() {
-    this.load.audio('nobu', 'assets/music/nobu.mp3')
-    this.load.audio('warcraft-Human', 'assets/music/Warcraft 3 Soundtrack Human 2.mp3')
-    this.load.audio('victory', 'assets/music/Two Steps From Hell - Victory.mp3')
+    // this.load.audio('nobu', 'assets/music/nobu.mp3')
+    // this.load.audio('warcraft-Human', 'assets/music/Warcraft 3 Soundtrack Human 2.mp3')
+    // this.load.audio('victory', 'assets/music/Two Steps From Hell - Victory.mp3')
     // this.load.video('vv', 'https://www.youtube.com/watch?v=FKFkf2q_iOs')
   }
   loadFonts() {}
 
   loadMaps() {
-    this.load.tilemap('map', 'assets/map/map-large.json', null, Phaser.Tilemap.TILED_JSON)
+    // this.load.tilemap('map', 'assets/map/map-large.json', null, Phaser.Tilemap.TILED_JSON)
   }
 
   loadImages() {
-    this.load.image('tiles', 'assets/map/map.png')
+    // this.load.image('tiles', 'assets/map/map.png')
     this.load.image('marker', 'assets/images/marker.png', 16, 16)
     this.load.image('earth', 'assets/images/scorched_earth.png')
     this.load.image('menu', 'assets/images/menu.png')

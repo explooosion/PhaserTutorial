@@ -21,10 +21,10 @@ export default class extends Phaser.State {
     console.log('ini')
   }
   preload() {
-    this.music = this.game.add.audio('warcraft-Human')
+    // this.music = this.game.add.audio('warcraft-Human')
     /** 0-1 */
-    this.music.volume = 0.5
-    this.music.play()
+    // this.music.volume = 0.5
+    // this.music.play()
     /** 靜音 */
     // this.music.mute = true
     console.log('preload')

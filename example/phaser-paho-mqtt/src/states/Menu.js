@@ -4,10 +4,10 @@ export default class extends Phaser.State {
         // this.stage.backgroundColor = '#EDEEC9'
     }
     preload() {
-        this.music = this.game.add.audio('victory')
+        // this.music = this.game.add.audio('victory')
         /** 0-1 */
-        this.music.volume = 0.5
-        this.music.play()
+        // this.music.volume = 0.5
+        // this.music.play()
         /** 靜音 */
         // this.music.mute = true        
 
@@ -52,13 +52,13 @@ export default class extends Phaser.State {
 
     actionOnClick() {
         // console.log('button click')
-        this.music.destroy()
+        // this.music.destroy()
         this.state.start('Game', true, false);
     }
 
     render() {
         if (__DEV__) {
-            this.game.debug.soundInfo(this.music, 20, 32);
+            // this.game.debug.soundInfo(this.music, 20, 32);
         }
     }
 
