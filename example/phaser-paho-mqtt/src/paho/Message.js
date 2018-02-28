@@ -42,8 +42,8 @@ const Message = {
             team: 0,
             id: 'client1',
             hp: 100,
-            x: 17,
-            y: 17,
+            x: 30,
+            y: 30,
             name: 'abc',
             result: 'success'
         }))
@@ -107,23 +107,21 @@ const Message = {
             team: 0,
             hp: 100,
             attack: 50,
-            x: 20,
-            y: 54,
+            x: 30,
+            y: 30,
             others: [{
-                    team: 0,
-                    id: 'client2',
-                    hp: 100,
-                    x: 24,
-                    y: 19,
-                },
-                {
-                    team: 0,
-                    id: 'client3',
-                    hp: 100,
-                    x: 38,
-                    y: 45,
-                }
-            ]
+                team: 0,
+                id: 'client2',
+                hp: 100,
+                x: 40,
+                y: 40,
+            }, {
+                team: 0,
+                id: 'client3',
+                hp: 100,
+                x: 50,
+                y: 50,
+            }]
         }))
         this.payload.destinationName = `game/${master}/${player}`
         this.payload.qos = 0
