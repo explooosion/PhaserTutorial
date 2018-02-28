@@ -1,6 +1,12 @@
 import Phaser from 'phaser'
+
+import {
+    stateChange,
+} from '../../utils/phaser'
+
 export default class extends Phaser.State {
     init() {
+        this.scale.scaleMode = Phaser.ScaleManager.RESIZE;
         // this.stage.backgroundColor = '#EDEEC9'
     }
     preload() {
@@ -52,8 +58,8 @@ export default class extends Phaser.State {
 
     actionOnClick() {
         // console.log('button click')
-        // this.music.destroy()
-        this.state.start('Game', true, false);
+        // this.music.destroy()  
+        stateChange(this.game.state, 'Game')
     }
 
     render() {

@@ -3,6 +3,10 @@ import {
   centerGameObjects
 } from '../utils'
 
+import {
+  stateChange,
+} from '../../utils/phaser'
+
 export default class extends Phaser.State {
   init() {
     this.loaderBg = this.add.sprite(this.game.world.centerX, this.game.world.centerY, 'loaderBg')
@@ -47,7 +51,8 @@ export default class extends Phaser.State {
   }
 
   create() {
-    this.state.start('Menu')
+
+    stateChange(this.game.state, 'Menu')
   }
 
 }

@@ -1,3 +1,22 @@
+import BootState from '../src/states/Boot'
+import SplashState from '../src/states/Splash'
+import GameState from '../src/states/Game'
+import MenuState from '../src/states/Menu'
+
+function stateChange(state, next) {
+  state.remove(state.current)
+  let NextState;
+  switch (next) {
+    case 'Menu':
+      NextState = MenuState
+      break;
+    case 'Game':
+      NextState = GameState
+      break;
+  }
+  state.add(next, NextState, true)
+}
+
 /**
  * 將物件移置中心點
  */
@@ -20,6 +39,7 @@ function movePositionFix(oldPoint, newPoint) {
 }
 
 export {
+  stateChange,
   centerGameObjects,
   movePositionFix,
 }

@@ -13,11 +13,18 @@ import {
 } from '../../utils/paho'
 
 import {
+  stateChange,
   movePositionFix,
 } from '../../utils/phaser'
 
 export default class extends Phaser.State {
   init() {
+    /** Connection */
+    const ROOM = window.location.hash === '' ? 'abcdef' : window.location.hash.trim().replace('#', '')
+    this.client = new Client(ROOM)
+    this.client.onConnect()
+    this.client.client.onMessageArrived = this.setTopicHandler.bind(this)
+
     console.log('ini')
   }
   preload() {
@@ -32,11 +39,14 @@ export default class extends Phaser.State {
 
   create() {
 
-    /** Connection */
-    const ROOM = window.location.hash === '' ? 'abcdef' : window.location.hash.trim().replace('#', '')
-    this.client = new Client(ROOM)
-    this.client.onConnect()
-    this.client.client.onMessageArrived = this.setTopicHandler.bind(this)
+    /** Keyboard */
+    const exitKey = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC)
+    exitKey.onDown.add(() => {
+      console.log('press exit')
+      this.client.onDisconnect()
+      this.game.world.setBounds(0, 0, 1024, 768)
+      stateChange(this.state, 'Menu')
+    }, this)
 
     // Keep running on losing focus
     this.game.stage.disableVisibilityChange = true
@@ -52,29 +62,19 @@ export default class extends Phaser.State {
 
     this.cursors = this.game.input.keyboard.createCursorKeys()
 
-    /** Keyboard */
-
-    const exitKey = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC)
-    exitKey.onDown.add(() => {
-      console.log('press exit')
-      this.client.client.disconnect()
-      this.stage.restart()
-      // this.state.start('Menu', true, false);
-    }, this)
-
   }
 
   shutdown() {
     console.log('shutdown')
   }
+
   render() {
-    if (__DEV__) {
-      this.game.debug.inputInfo(32, 32)
-      if (this.line !== undefined) {
-        this.game.debug.geom(this.line);
-        this.game.debug.lineInfo(this.line, 32, 150);
-      }
+    this.game.debug.inputInfo(32, 32)
+    if (this.line !== undefined) {
+      this.game.debug.geom(this.line);
+      this.game.debug.lineInfo(this.line, 32, 150);
     }
+    if (__DEV__) {}
   }
 
   setTopicHandler(receive) {
@@ -124,6 +124,7 @@ export default class extends Phaser.State {
   }
 
   onNewStatus(payload) {
+    console.log(payload)
     this.onPlayerStatus(payload)
     this.onEnemiesStatus(payload.others)
   }
@@ -148,7 +149,7 @@ export default class extends Phaser.State {
     }
     if (this.payOldKey === undefined) {
       this.payOldKey = []
-      console.log('reset key', payload)
+      console.log('new player', payload)
     }
 
     let payNewKey = []
@@ -179,6 +180,7 @@ export default class extends Phaser.State {
     })
 
     /** Delete Remaining Player */
+    console.log('delete', Diff)
 
   }
 
@@ -195,11 +197,11 @@ export default class extends Phaser.State {
 
     if (this.player !== undefined) {
 
-      for (var i = 0; i < this.enemies.length; i++) {
-        if (this.enemies[i]) {
-          this.game.physics.arcade.collide(this.player, this.enemies[i])
-        }
-      }
+      // for (var i = 0; i < this.enemies.length; i++) {
+      //   if (this.enemies[i]) {
+      //     this.game.physics.arcade.collide(this.player, this.enemies[i])
+      //   }
+      // }
 
       // 鍵盤事件
       // if (this.cursors.left.isDown) {

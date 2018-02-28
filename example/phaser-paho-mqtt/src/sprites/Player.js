@@ -29,8 +29,8 @@ export default class extends Phaser.Sprite {
 
         // this.game.camera.follow(this.player)
         this.game.camera.follow(this, Phaser.Camera.FOLLOW_LOCKON, 0.1, 0.1);
-        this.game.camera.deadzone = new Phaser.Rectangle(150, 150, 500, 500)
-        this.game.camera.focusOnXY(0, 0)
+        // this.game.camera.deadzone = new Phaser.Rectangle(this.x, this.y, 500, 300)
+        // this.game.camera.focusOnXY(this.x, this.y)
 
         this.game.add.existing(this)
     }
@@ -44,12 +44,13 @@ export default class extends Phaser.Sprite {
         // 停止事件
         if (this.newpoint) {
             const dis = Phaser.Math.distance(this.x, this.y, this.newpoint.x, this.newpoint.y).toFixed(2)
-            if (dis < 3) {
+            if (dis < 20) {
                 this.currentSpeed = 0
                 this.body.velocity.setTo(0, 0);
                 this.x = this.newpoint.x
                 this.y = this.newpoint.y
                 this.newpoint = null
+                console.log('stop')
             }
         }
     }
@@ -60,7 +61,7 @@ export default class extends Phaser.Sprite {
      */
     move(payload) {
         if (this.game.physics.arcade.distanceToXY(this, payload.x, payload.y) >= 10) {
-            this.currentSpeed = 300
+            this.currentSpeed = 500
             this.newpoint = {
                 x: payload.x,
                 y: payload.y

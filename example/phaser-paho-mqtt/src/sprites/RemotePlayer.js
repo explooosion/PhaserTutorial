@@ -44,7 +44,7 @@ export default class extends Phaser.Sprite {
         // 停止事件
         if (this.newpoint) {
             const dis = Phaser.Math.distance(this.x, this.y, this.newpoint.x, this.newpoint.y).toFixed(2)
-            if (dis < 3) {
+            if (dis < 20) {
                 this.currentSpeed = 0
                 this.body.velocity.setTo(0, 0);
                 this.x = this.newpoint.x
@@ -60,22 +60,22 @@ export default class extends Phaser.Sprite {
      */
     move(payload) {
         /** Test Server */
-        if (this.test === undefined) {
-            /** Add Player */
-            this.test = {
-                x: 0,
-                y: 0
-            }
-            this.test.x = payload.x
-            this.test.y = payload.y
-        } else {
-            this.test.x = this.test.x - Math.floor((Math.random() * 50) + 1);
-            this.test.y = this.test.y - Math.floor((Math.random() * 50) + 1);
-        }
-        payload = this.test
+        // if (this.test === undefined) {
+        //     /** Add Player */
+        //     this.test = {
+        //         x: 0,
+        //         y: 0
+        //     }
+        //     this.test.x = payload.x
+        //     this.test.y = payload.y
+        // } else {
+        //     this.test.x = this.test.x - Math.floor((Math.random() * 50) + 1);
+        //     this.test.y = this.test.y - Math.floor((Math.random() * 50) + 1);
+        // }
+        // payload = this.test
 
         if (this.game.physics.arcade.distanceToXY(this, payload.x, payload.y) >= 10) {
-            this.currentSpeed = 300
+            this.currentSpeed = 500
             this.newpoint = {
                 x: payload.x,
                 y: payload.y

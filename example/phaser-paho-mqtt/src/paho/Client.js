@@ -41,6 +41,13 @@ export default class Clients {
     }
 
     /** 
+     * 連線中斷
+     */
+    onDisconnect() {
+        this.client.disconnect()
+    }
+
+    /** 
      * 連線成功
      */
     onSuccess() {
@@ -78,10 +85,11 @@ export default class Clients {
     onConnectionLost(responseObject) {
         this.receive = undefined
         if (responseObject.errorCode !== 0) {
-            console.log('onConnectionLost:' + responseObject.errorMessage);
-        } else {
+            // console.log('onConnectionLost:' + responseObject.errorMessage);
             console.log('connection to server lost. Attempting to reconnect in ' + this.reconnectTimeout / 1000 + ' sec')
             setTimeout(this.onConnect.bind(this))
+        } else {
+            console.log('disonnection success.')
         }
     }
 
