@@ -1,8 +1,26 @@
+import Phaser from 'phaser'
+
 import BootState from '../src/states/Boot'
 import SplashState from '../src/states/Splash'
 import GameState from '../src/states/Game'
 import MenuState from '../src/states/Menu'
 
+/**
+ * 重新繪製視窗大小 
+ */
+function reszieGame() {
+  const docElement = document.documentElement
+  const width = docElement.clientWidth
+  const height = docElement.clientHeight
+  console.log(`Resize Window: ${width}x${height}`)
+  this.world.setBounds(0, 0, width, height)
+}
+
+/**
+ * 更換場景並刪除當前場景
+ * @param {object} state 
+ * @param {string} next 
+ */
 function stateChange(state, next) {
   state.remove(state.current)
   let NextState;
@@ -18,7 +36,8 @@ function stateChange(state, next) {
 }
 
 /**
- * 將物件移置中心點
+ * 將物體設置中心點
+ * @param {object} objects 
  */
 function centerGameObjects(objects) {
   objects.forEach(function (object) {
@@ -28,6 +47,8 @@ function centerGameObjects(objects) {
 
 /**
  * 修正玩家移動軌跡
+ * @param {number} oldPoint 
+ * @param {number} newPoint 
  */
 function movePositionFix(oldPoint, newPoint) {
   const unit = 16 // 根據玩家材質尺寸
@@ -39,6 +60,7 @@ function movePositionFix(oldPoint, newPoint) {
 }
 
 export {
+  reszieGame,
   stateChange,
   centerGameObjects,
   movePositionFix,

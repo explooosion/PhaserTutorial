@@ -6,7 +6,6 @@ import {
 
 export default class extends Phaser.State {
     init() {
-        this.scale.scaleMode = Phaser.ScaleManager.RESIZE;
         // this.stage.backgroundColor = '#EDEEC9'
     }
     preload() {

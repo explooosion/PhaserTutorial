@@ -39,13 +39,24 @@ export default class extends Phaser.State {
 
   create() {
 
-    /** Keyboard */
+    /** Keyboard - ESC */
     const exitKey = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC)
     exitKey.onDown.add(() => {
       console.log('press exit')
       this.client.onDisconnect()
-      this.game.world.setBounds(0, 0, 1024, 768)
+
+      const docElement = document.documentElement
+      const width = docElement.clientWidth
+      const height = docElement.clientHeight
+
+      this.game.world.setBounds(this.game.world.centerX, this.game.world.centerY, width, height)
       stateChange(this.state, 'Menu')
+    }, this)
+
+    /** Keyboard - F1 */
+    const debugKey = this.game.input.keyboard.addKey(Phaser.Keyboard.F1)
+    exitKey.onDown.add(() => {
+      this.debug = !this.debug
     }, this)
 
     // Keep running on losing focus
@@ -69,10 +80,12 @@ export default class extends Phaser.State {
   }
 
   render() {
-    this.game.debug.inputInfo(32, 32)
-    if (this.line !== undefined) {
-      this.game.debug.geom(this.line);
-      this.game.debug.lineInfo(this.line, 32, 150);
+    if (this.debug) {
+      this.game.debug.inputInfo(32, 32)
+      if (this.line !== undefined) {
+        this.game.debug.geom(this.line);
+        this.game.debug.lineInfo(this.line, 32, 150);
+      }
     }
     if (__DEV__) {}
   }

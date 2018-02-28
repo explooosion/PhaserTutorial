@@ -7,7 +7,11 @@ import SplashState from './states/Splash'
 import GameState from './states/Game'
 import MenuState from './states/Menu'
 
-import config from './config'
+import config from '../utils/config'
+
+import {
+  reszieGame,
+} from '../utils/phaser'
 
 class Game extends Phaser.Game {
   constructor() {
@@ -28,9 +32,11 @@ class Game extends Phaser.Game {
       this.state.start('Boot')
     }
   }
+
 }
 
 window.game = new Game()
+window.onresize = reszieGame.bind(window.game)
 
 if (window.cordova) {
   var app = {

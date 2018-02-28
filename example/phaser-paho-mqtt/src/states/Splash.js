@@ -1,10 +1,6 @@
-import Phaser from 'phaser'
-import {
-  centerGameObjects
-} from '../utils'
-
 import {
   stateChange,
+  centerGameObjects
 } from '../../utils/phaser'
 
 export default class extends Phaser.State {

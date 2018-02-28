@@ -2,6 +2,7 @@ import Paho from 'paho-mqtt'
 
 /**
  * 重新組合訊息內容(修正原paho-mqtt錯誤)
+ * @param {object} message 
  */
 function bulidMessageObjects(message) {
     let result = message.input ? new Paho.Message(message.input) : message
