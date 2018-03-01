@@ -4,6 +4,8 @@ import {
     stateChange,
 } from '../../utils/phaser'
 
+import LZ4 from 'lz4'
+
 export default class extends Phaser.State {
     init() {
         // this.stage.backgroundColor = '#EDEEC9'
