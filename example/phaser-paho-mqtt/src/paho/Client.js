@@ -44,6 +44,7 @@ export default class Clients {
      * 連線中斷
      */
     onDisconnect() {
+        this.client.send(Message.RemovePlayer(this.master, this.player))
         this.client.disconnect()
     }
 
