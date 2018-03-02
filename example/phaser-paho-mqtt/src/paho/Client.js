@@ -57,7 +57,7 @@ export default class Clients {
 
         /** Server */
         // this.client.subscribe(`room`)
-        // this.client.subscribe(`newplayer/${this.master}`)
+        this.client.subscribe(`newplayer/${this.master}`)
 
         /** Client */
         this.client.subscribe(`join/${this.master}`)
@@ -102,7 +102,6 @@ export default class Clients {
      * @param {number} y
      */
     onPlayerMoving(master, player, x, y) {
-        console.log(master, player)
         this.client.send(Message.MovePlayer(master, player, x, y))
     }
 
