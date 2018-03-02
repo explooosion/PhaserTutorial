@@ -1,4 +1,4 @@
 title: TeacherWeb
 encoding: UTF-8
 timezone: AsiaTaiwan
-baseurl: '/example/phaser-paho-mqtt/build'
+baseurl: './example/phaser-paho-mqtt/build'
