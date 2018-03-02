@@ -59,9 +59,23 @@ function movePositionFix(oldPoint, newPoint) {
   return fixPoint
 }
 
+/**
+ * 從敵人中找到符合ID的人
+ * @param {number} id 
+ */
+function findPlayerById(id) {
+  for (let i = 0; i < this.enemies.length; i++) {
+    if (this.enemies[i].clientid === id) {
+      return i
+    }
+  }
+  return false
+}
+
 export {
   reszieGame,
   stateChange,
-  centerGameObjects,
+  findPlayerById,
   movePositionFix,
+  centerGameObjects,
 }

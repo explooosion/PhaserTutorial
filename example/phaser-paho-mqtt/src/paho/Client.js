@@ -19,6 +19,7 @@ export default class Clients {
         this.receive = null
         this.client = null
         this.status = null
+        this.is_join = true
     }
 
     /** 
@@ -32,6 +33,7 @@ export default class Clients {
         const connectionOptinos = {
             useSSL: false,
             keepAliveInterval: 30,
+            // reconnect: true,
             onSuccess: this.onSuccess.bind(this),
             onFailure: this.onFailure.bind(this),
             // userName: 'Username',
@@ -43,9 +45,14 @@ export default class Clients {
     /** 
      * 連線中斷
      */
-    onDisconnect() {
+    onDisconnect(reconnect) {
+        this.receive = undefined
         this.client.send(Message.RemovePlayer(this.master, this.player))
         this.client.disconnect()
+        if (reconnect) {
+            this.is_join = false
+            this.onConnect()
+        }
     }
 
     /** 
@@ -57,25 +64,24 @@ export default class Clients {
 
         /** Server */
         // this.client.subscribe(`room`)
-        this.client.subscribe(`newplayer/${this.master}`)
+        // this.client.subscribe(`newplayer/${this.master}`)
 
         /** Client */
         this.client.subscribe(`join/${this.master}`)
-        this.client.send(Message.JoinRoom(this.master))
+        if (this.is_join) {
+            this.client.send(Message.JoinRoom(this.master))
+        }
 
     }
 
     /**
      * 連線失敗
-     * @param {object} message 
+     * @param {object} responseObject 
      */
-    onFailure(message) {
+    onFailure(responseObject) {
         this.receive = undefined
         if (responseObject.errorCode !== 0) {
-            console.log('onConnectionFail:' + responseObject.errorMessage);
-        } else {
-            console.log('connection to server fail. Attempting to reconnect in ' + this.reconnectTimeout / 1000 + ' sec')
-            setTimeout(this.onConnect.bind(this))
+            console.log('onConnectionFail:' + responseObject.errorMessage)
         }
     }
 
@@ -86,10 +92,6 @@ export default class Clients {
     onConnectionLost(responseObject) {
         this.receive = undefined
         if (responseObject.errorCode !== 0) {
-            // console.log('onConnectionLost:' + responseObject.errorMessage);
-            console.log('connection to server lost. Attempting to reconnect in ' + this.reconnectTimeout / 1000 + ' sec')
-            setTimeout(this.onConnect.bind(this))
-        } else {
             console.log('disonnection success.')
         }
     }
@@ -124,8 +126,10 @@ export default class Clients {
      * @param {string} player
      */
     on(value, callback) {
-        if (value === this.receive.topic) {
-            callback(this.receive.payload)
+        if (this.receive) {
+            if (value === this.receive.topic) {
+                callback(this.receive.payload)
+            }
         }
     }
 }

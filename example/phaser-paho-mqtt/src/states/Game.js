@@ -9,11 +9,17 @@ import Marker from '../sprites/Marker'
 import _ from 'lodash'
 
 import {
-  bulidMessageObjects
+  exitGame,
+  debugMode,
+} from '../../utils/keyboard'
+
+import {
+  bulidMessageObjects,
 } from '../../utils/paho'
 
 import {
   stateChange,
+  findPlayerById,
   movePositionFix,
 } from '../../utils/phaser'
 
@@ -28,36 +34,26 @@ export default class extends Phaser.State {
     console.log('ini')
   }
   preload() {
+    /** Music */
     // this.music = this.game.add.audio('warcraft-Human')
     /** 0-1 */
     // this.music.volume = 0.5
     // this.music.play()
     /** 靜音 */
     // this.music.mute = true
+
+    /** Keyboard - ESC */
+    const ExitKey = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC)
+    ExitKey.onDown.add(exitGame.bind(this))
+
+    /** Keyboard - F1 */
+    const DebugKey = this.game.input.keyboard.addKey(Phaser.Keyboard.F1)
+    DebugKey.onDown.add(debugMode.bind(this))
+
     console.log('preload')
   }
 
   create() {
-
-    /** Keyboard - ESC */
-    const exitKey = this.game.input.keyboard.addKey(Phaser.Keyboard.ESC)
-    exitKey.onDown.add(() => {
-      console.log('press exit')
-      this.client.onDisconnect()
-
-      const docElement = document.documentElement
-      const width = docElement.clientWidth
-      const height = docElement.clientHeight
-
-      this.game.world.setBounds(this.game.world.centerX, this.game.world.centerY, width, height)
-      stateChange(this.state, 'Menu')
-    }, this)
-
-    /** Keyboard - F1 */
-    const debugKey = this.game.input.keyboard.addKey(Phaser.Keyboard.F1)
-    exitKey.onDown.add(() => {
-      this.debug = !this.debug
-    }, this)
 
     // Keep running on losing focus
     this.game.stage.disableVisibilityChange = true
@@ -90,6 +86,10 @@ export default class extends Phaser.State {
     if (__DEV__) {}
   }
 
+  /**
+   * 訊息接收
+   * @param {Message} receive 
+   */
   setTopicHandler(receive) {
     this.client.receive = bulidMessageObjects(receive)
     /** Server */
@@ -99,14 +99,19 @@ export default class extends Phaser.State {
     this.client.on(`game/${this.client.master}/${this.client.player}`, this.onNewStatus.bind(this))
   }
 
+  /**
+   * 房間事件
+   * @param {object} payload 
+   */
   onEventRoom(payload) {
     switch (payload.action) {
       case 'create':
         console.log('server: player create room')
         break
       case 'join':
+        /** Server */
         console.log('server: player join room')
-        this.client.send(Message.NewPlayer(payload.key))
+        // this.client.send(Message.NewPlayer(payload.key))
         break
       default:
         console.log('server: no room result')
@@ -114,18 +119,29 @@ export default class extends Phaser.State {
     }
   }
 
+  /**
+   * 房間加入
+   * @param {object} payload 
+   */
   onJoinRoom(payload) {
     switch (payload.result) {
       case 'success':
         this.player = payload.id
         this.map = payload.map
-        /** Client */
-        console.log(`client: join success, id ${this.player}`)
-        this.client.unsubscribe(`join/${this.master}`)
-        this.client.subscribe(`game/${this.master}/${this.player}`)
-        /** Server */
-        // this.client.subscribe(`game/${this.master}`)
-        // this.onBroadcastPlayer(this.master, this.player)
+        if (this.clientid !== this.player) {
+          console.log('reconnect')
+          this.clientid = this.player
+          this.client.unsubscribe(`join/${this.master}`)
+          this.onDisconnect(true)
+        } else {
+          /** Client */
+          console.log(`client: join success, id ${this.player}`)
+          this.client.unsubscribe(`join/${this.master}`)
+          this.client.subscribe(`game/${this.master}/${this.player}`)
+          /** Server */
+          // this.client.subscribe(`game/${this.master}`)
+          // this.onBroadcastPlayer(this.master, this.player)
+        }
         break
       case 'fail':
         console.log('client: join fail')
@@ -136,12 +152,20 @@ export default class extends Phaser.State {
     }
   }
 
+  /**
+   * 接收新狀態
+   * @param {object} payload 
+   */
   onNewStatus(payload) {
     console.log(payload)
     this.onPlayerStatus(payload)
     this.onEnemiesStatus(payload.others)
   }
 
+  /**
+   * 更新玩家狀態
+   * @param {object} payload 
+   */
   onPlayerStatus(payload) {
     if (this.player === undefined) {
       this.player = new Player({
@@ -155,6 +179,10 @@ export default class extends Phaser.State {
     this.player.move(payload)
   }
 
+  /**
+   * 更新敵人狀態
+   * @param {object} payload 
+   */
   onEnemiesStatus(payload) {
     if (payload.length === 0) {
       console.log('return func', payload)
@@ -187,13 +215,14 @@ export default class extends Phaser.State {
         this.enemies.push(enemy)
       } else {
         /** Update Player */
-        const index = this.playerById(value.id)
+        const index = this.findPlayerById(value.id)
         this.enemies[index].move(value)
       }
     })
 
     /** Delete Remaining Player */
     console.log('delete', Diff)
+    // to do something.
 
   }
 
@@ -239,9 +268,7 @@ export default class extends Phaser.State {
       // 指標事件
       if (this.game.input.activePointer.isDown) {
         if (this.game.physics.arcade.distanceToPointer(this.player) >= 10) {
-
           // console.log(`click x:${this.game.input.worldX}, y:${this.game.input.worldY}`)
-
           const point = movePositionFix(this.player, {
             x: this.game.input.worldX,
             y: this.game.input.worldY
@@ -265,15 +292,4 @@ export default class extends Phaser.State {
       }
     }
   }
-
-  // Find player by ID
-  playerById(id) {
-    for (let i = 0; i < this.enemies.length; i++) {
-      if (this.enemies[i].clientid === id) {
-        return i
-      }
-    }
-    return false
-  }
-
 }
